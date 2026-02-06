@@ -326,10 +326,10 @@
           id="phone"
           name="Phone Number"
           inputmode="numeric"
-          pattern="[0-9]+"
+          pattern="[0-9]{10}"
           required
         >
-        <div class="helper">Digits only, no spaces or symbols (e.g., 4165551234).</div>
+        <div class="helper">Exactly 10 digits, no spaces or symbols (e.g., 4165551234).
         <div class="error-text">Phone number must contain digits only.</div>
       </div>
 
@@ -421,8 +421,8 @@
       // Phone: strictly numeric
       const phoneInput = document.getElementById('phone');
       const phone = phoneInput.value.trim();
-      if (!phone || !/^[0-9]+$/.test(phone)) {
-        setFieldError('field-phone', true, 'Phone number must be digits only.');
+      if (!/^[0-9]{10}$/.test(phone)) {
+        setFieldError('field-phone', true, 'Phone number must be exactly 10 digits.');
         valid = false;
       } else {
         setFieldError('field-phone', false);
