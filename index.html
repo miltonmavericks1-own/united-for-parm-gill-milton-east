@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>United For Parm Gill - Milton East</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Simple Canada flag themed background using gradients -->
+  <style>
+    :root {
+      --canada-red: #ff0000;
+      --canada-white: #ffffff;
+      --text-dark: #111827;
+      --accent-blue: #0f766e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--text-dark);
+      /* subtle Canada flag style background */
+      background:
+        linear-gradient(to right,
+          var(--canada-red) 0,
+          var(--canada-red) 20%,
+          var(--canada-white) 20%,
+          var(--canada-white) 80%,
+          var(--canada-red) 80%,
+          var(--canada-red) 100%);
+    }
+
+    .flag-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.05;
+      background-image:
+        radial-gradient(circle at 20% 20%, var(--canada-white) 0, transparent 60%),
+        radial-gradient(circle at 80% 80%, var(--canada-white) 0, transparent 60%);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 18px;
+      box-shadow:
+        0 20px 45px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(15, 23, 42, 0.06);
+      padding: 28px 24px 26px;
+      backdrop-filter: blur(6px);
+    }
+
+    @media (min-width: 640px) {
+      .container {
+        padding: 32px 32px 30px;
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #b91c1c;
+      background: rgba(248, 113, 113, 0.12);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .badge-flag {
+      width: 16px;
+      height: 10px;
+      border-radius: 2px;
+      background: linear-gradient(
+        to right,
+        var(--canada-red) 0,
+        var(--canada-red) 30%,
+        var(--canada-white) 30%,
+        var(--canada-white) 70%,
+        var(--canada-red) 70%,
+        var(--canada-red) 100%
+      );
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+    }
+
+    .title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 0.98rem;
+      color: #4b5563;
+      margin-bottom: 4px;
+    }
+
+    .support-line {
+      font-size: 0.9rem;
+      color: #1f2937;
+      margin-top: 6px;
+    }
+
+    .support-line span {
+      font-weight: 700;
+      color: var(--canada-red);
+    }
+
+    form {
+      margin-top: 18px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+
+    .required {
+      font-size: 0.8rem;
+      color: #b91c1c;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 0.95rem;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease,
+                  background-color 0.15s ease;
+      background-color: #f9fafb;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.2),
+                  0 0 0 4px rgba(56, 189, 248, 0.15);
+      background-color: #ffffff;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .helper {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .error-text {
+      font-size: 0.78rem;
+      color: #b91c1c;
+      margin-top: 3px;
+      display: none;
+    }
+
+    .error input,
+    .error textarea {
+      border-color: #dc2626;
+      background-color: #fef2f2;
+    }
+
+    .error .error-text {
+      display: block;
+    }
+
+    .actions {
+      margin-top: 18px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #ffffff;
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      box-shadow: 0 12px 20px rgba(220, 38, 38, 0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease,
+                  filter 0.12s ease;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow: 0 16px 26px rgba(220, 38, 38, 0.45);
+    }
+
+    button[type="submit"]:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 16px rgba(185, 28, 28, 0.5);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 0.86rem;
+      padding: 8px 10px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: #ecfdf3;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status.error {
+      display: block;
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .footer-note span {
+      font-weight: 600;
+      color: #111827;
+    }
+  </style>
+</head>
+<body>
+  <div class="flag-overlay" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="header">
+      <div class="badge">
+        <span class="badge-flag"></span>
+        UNITED FOR CANADA
+      </div>
+      <div class="title">United For Parm Gill - Milton East</div>
+      <div class="subtitle">Registration for 2026</div>
+      <p class="support-line">
+        Stand together with <span>Parm Gill</span> and the Canadian conservative movement in Milton East.
+      </p>
+    </div>
+
+    <form id="supportForm" novalidate>
+      <div class="field" id="field-name">
+        <label for="fullName">
+          Full Name
+          <span class="required">Required</span>
+        </label>
+        <input
+          type="text"
+          id="fullName"
+          name="Full Name"
+          autocomplete="name"
+          required
+        >
+        <div class="error-text">Please enter your full name.</div>
+      </div>
+
+      <div class="field" id="field-address">
+        <label for="address">
+          Full Home Address
+          <span class="required">Required</span>
+        </label>
+        <textarea
+          id="address"
+          name="Full Home Address"
+          autocomplete="street-address"
+          required
+        ></textarea>
+        <div class="helper">Include street, city, province, and postal code.</div>
+        <div class="error-text">Please enter your full home address.</div>
+      </div>
+
+      <div class="field" id="field-phone">
+        <label for="phone">
+          Phone Number
+          <span class="required">Required</span>
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          name="Phone Number"
+          inputmode="numeric"
+          pattern="[0-9]+"
+          required
+        >
+        <div class="helper">Digits only, no spaces or symbols (e.g., 4165551234).</div>
+        <div class="error-text">Phone number must contain digits only.</div>
+      </div>
+
+      <div class="field" id="field-email">
+        <label for="email">
+          Email ID
+          <span class="required">Required</span>
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="Email ID"
+          autocomplete="email"
+          required
+        >
+        <div class="error-text">Please enter a valid email address.</div>
+      </div>
+
+      <div class="field" id="field-regid">
+        <label for="regId">
+          Registration ID
+          <span class="required">Required</span>
+        </label>
+        <input
+          type="text"
+          id="regId"
+          name="Registration ID"
+          required
+        >
+        <div class="helper">Alphanumeric, cannot be empty.</div>
+        <div class="error-text">Registration ID is required.</div>
+      </div>
+
+      <div class="actions">
+        <button type="submit" id="submitBtn">
+          Submit Registration
+        </button>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+
+      <p class="footer-note">
+        Your information is securely recorded in a private register and used only for
+        <span>United For Parm Gill - Milton East</span> organizing purposes.
+      </p>
+    </form>
+  </div>
+
+  <script>
+    const FORM_URL = 'https://script.google.com/macros/s/AKfycbyZTt-Yonh0MPk9RFsmcQL5SV6kF3vb17kKjzqh5jpTHjYBsAvfWhy06Frqu-WFKr7p/exec'; // <-- paste Apps Script /exec URL here
+
+    const form = document.getElementById('supportForm');
+    const statusBox = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function setFieldError(fieldId, hasError, message) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+      const errorText = field.querySelector('.error-text');
+      if (hasError) {
+        field.classList.add('error');
+        if (message && errorText) errorText.textContent = message;
+      } else {
+        field.classList.remove('error');
+      }
+    }
+
+    function validateForm() {
+      let valid = true;
+
+      // Full name
+      const fullName = document.getElementById('fullName').value.trim();
+      if (!fullName) {
+        setFieldError('field-name', true);
+        valid = false;
+      } else {
+        setFieldError('field-name', false);
+      }
+
+      // Address
+      const address = document.getElementById('address').value.trim();
+      if (!address) {
+        setFieldError('field-address', true);
+        valid = false;
+      } else {
+        setFieldError('field-address', false);
+      }
+
+      // Phone: strictly numeric
+      const phoneInput = document.getElementById('phone');
+      const phone = phoneInput.value.trim();
+      if (!phone || !/^[0-9]+$/.test(phone)) {
+        setFieldError('field-phone', true, 'Phone number must be digits only.');
+        valid = false;
+      } else {
+        setFieldError('field-phone', false);
+      }
+
+      // Email: basic pattern
+      const email = document.getElementById('email').value.trim();
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailPattern.test(email)) {
+        setFieldError('field-email', true, 'Please enter a valid email address.');
+        valid = false;
+      } else {
+        setFieldError('field-email', false);
+      }
+
+      // Registration ID: not empty
+      const regId = document.getElementById('regId').value.trim();
+      if (!regId) {
+        setFieldError('field-regid', true, 'Registration ID is required.');
+        valid = false;
+      } else {
+        setFieldError('field-regid', false);
+      }
+
+      return valid;
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      statusBox.className = 'status';
+      statusBox.style.display = 'none';
+      statusBox.textContent = '';
+
+      if (!validateForm()) {
+        statusBox.textContent = 'Please correct the highlighted fields.';
+        statusBox.classList.add('error');
+        statusBox.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(FORM_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.result === 'success') {
+          statusBox.textContent = 'Thank you! Your registration has been recorded.';
+          statusBox.classList.add('success');
+          statusBox.style.display = 'block';
+          form.reset();
+        } else {
+          throw new Error(result.error || 'Unknown error');
+        }
+      } catch (err) {
+        statusBox.textContent = 'Submission failed: ' + err.message;
+        statusBox.classList.add('error');
+        statusBox.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Registration';
+      }
+    });
+  </script>
+</body>
+</html>
